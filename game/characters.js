@@ -15,11 +15,25 @@ class Character {
         this.updateMaxVitals();
         this.currentHP = this.maxHP;
         this.currentEP = this.maxEP;
+        this.skills = {};
+        this.items = {};
+        this.target = '';
+        this.enemies = [];
+        this.allies = [];
     }
 
     updateMaxVitals() {
         this.maxHP = 400 + (this.stats.vit * 100);
         this.maxEP = 200 + (this.stats.end * 150);
+    }
+    
+    pickTarget(targetType) {
+        if(targetType === 'allEnemies'){
+            return 'not yet supported';
+        } else {
+            this.target = this.enemies[0];//temp
+            return this.target
+        }
     }
 
     takeDamage(amount, damageType) {
@@ -27,8 +41,9 @@ class Character {
         this.checkHealth();
     }
     
-    dealDamage(target, amount, damageType) {
-        target.takeDamage(amount, damageType);
+    dealDamage(targetType, amount, damageType) {
+        this.pickTarget(targetType);
+        this.target.takeDamage(amount, damageType);
     }
     
     restoreHealth(amount) {
@@ -40,7 +55,7 @@ class Character {
     }
     
     restoreEnergy(amount) {
-        if(amount === 'Full') {
+        if(amount === 'Max') {
             this.currentEP = this.maxEP
         } else {
             this.currentEP += amount;
@@ -49,10 +64,21 @@ class Character {
     
     checkHealth() {
         if(this.currentHP <= 0) {
-            this.beSlain();
+            this.beSlain();//PCs and NPCs have different beSlain behaviour, see Player and Mob classes for details.
         } else {
             return this.currentHP;
         }
+    }
+    
+    learnSkill(skill) {
+        let id = skill.skillName.toLowerCase();
+        this.skills[id] = skill;
+        this.skills[id].skillUser = this;
+    }
+    
+    unlearnSkill(skill) {
+        let target = skill.skillName.toLocaleLowerCase();
+        delete this.skills[target];
     }
 
 };
