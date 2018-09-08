@@ -2,4 +2,5 @@ node_modules/
 notes.txt
 package-lock.json
 package.json
-scripts.test.js
+.eslintrc.js
+.babelrc
